@@ -19,5 +19,6 @@ This document outlines planned enhancements to improve the overall user interfac
 | 7  | Simple internationalization (🇺🇸 / 🇧🇷) using a dictionary map       | Language adapts without touching logic code                       |
 | 8  | Support typed “b” or “#” as accidentals                             | Improves accessibility, especially for desktop keyboard users     |
 | 9  | Encapsulate UI steps in named functions (e.g., `sendStart()`)      | Cleaner structure, easier to update or localize UI behavior       |
+| 10 | Translate and revise `/docs/*.md` to English                      | Ensures consistency with codebase and supports international users |
 
 ---
