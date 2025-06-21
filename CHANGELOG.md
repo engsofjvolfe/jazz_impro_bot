@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),  
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.2.0] - 2025-06-21
+
+### Added
+- Quick action buttons "📖 Help" and "❌ Cancel" on /start
+- Navigation via "⬅️ Back" between steps (root → type → acc)
+
+### Changed
+- Step flow now edits a single message instead of sending many
+- Accidental ♮ (natural) now uses a visual symbol
+- Cleaner UI with compact keyboard layout
+
+---
+
 ## [0.1.2] - 2025-06-20
 
 ### Added
