@@ -1,0 +1,27 @@
+{
+  "name": "jazz-impro-bot",
+  "version": "0.1.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/bot.js",
+    "test": "jest --coverage",
+    "repl": "node -i"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@vitalets/google-translate-api": "^9.2.1",
+    "dotenv": "^16.5.0",
+    "glob": "^11.0.3",
+    "node-telegram-bot-api": "^0.66.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.29.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.5.0",
+    "jest": "^30.0.2",
+    "prettier": "^3.5.3"
+  }
+}
