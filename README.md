@@ -2,6 +2,13 @@
 
 **Telegram bot** for generating improvisation chords based on harmonic‐fifth rules. Users select a root note, chord quality and accidental (♭, ♯ or natural), then receive both the base chord and a suggested chord for improvisation.
 
+# ⚠️ Known Limitations
+This bot may still produce errors in specific cases, especially when dealing with enharmonic spellings (e.g., recognizing that the major 7th of F# is E#, not F).
+
+These limitations are known and will be addressed in future releases as the harmonic analysis system is further refined.
+
+If you notice any odd behavior, feel free to open an issue or report it.
+
 ---
 
 ## 🚀 Features
@@ -26,17 +33,31 @@
 ## 📂 Project Structure
 
 ```
-
 /src
-├── bot.js             # Bot flow, state management, message handling
-├── notes.js           # Note normalization, chromatic mapping, enharmonic spelling
-├── intervals.js       # Semitone definitions for scale degrees
-├── chordFormulas.js   # Chord templates (maj7, m7, 7, m7b5, dim7)
-├── chord.js           # Chord class: parsing, note generation, formatting
-└── improvisation.js   # Logic for deriving improvisation chords
+├── bot.js                # Entry point: initializes bot, routes commands and callbacks
+├── chord.js              # Chord class: parsing, note generation, formatting
+├── chordFormulas.js      # Chord templates (maj7, m7, 7, m7b5, dim7)
+├── improvisation.js      # Logic for deriving improvisation chords
+├── intervals.js          # Semitone definitions for scale degrees
+├── keyboards.js          # Inline keyboard layout generators (root, type, accidentals)
+├── notes.js              # Note normalization, chromatic mapping, enharmonic spelling
+├── session.js            # Per-chat state management and session timeout
+├── handlers/
+│   ├── commands.js       # /start, /help, /cancel command handlers
+│   ├── callbacks.js      # Routes callback_query actions to step handlers
+│   └── flow/
+│       ├── backNavigation.js   # Handles back:root and back:type navigation
+│       ├── handleAccidental.js # Final step: computes and shows result
+│       ├── handleRoot.js       # Handles root note selection
+│       ├── handleType.js       # Handles chord type selection
+│       └── quickActions.js     # restart, show_help, quick_cancel
 
 /tests
-└── \*.test.js          # Jest test suites for each module
+└── *.test.js            # Jest test suites for each module
+
+/docs
+├── app_flow.md          # Descrição do fluxo da aplicação (em português)
+└── code_flow.md         # Explicação técnica do fluxo do código (em português)
 
 ```
 
