@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),  
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.2.1] - 2025-06-21
+
+### Added
+- Auto-timeout: session is automatically deleted after 5 minutes of inactivity
+- "🔁 New Chord" button at the end of the interaction to restart without typing /start
+- "typing..." chat action shown before sending the result (reduces latency perception)
+
+### Changed
+- Final result now replaces the last message instead of sending a new one
+- Removed residual "calculating…" message after chord processing
+- Timer is now properly cleared on `/cancel` command and ❌ Cancel button
+
+### Internal
+- Automatic synchronization between CHANGELOG.md and package.json version
+- Added Git hooks (`pre-commit`, `post-checkout`) and `"prepare"` script for consistency
+
 ## [0.2.0] - 2025-06-21
 
 ### Added

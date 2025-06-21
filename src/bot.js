@@ -58,6 +58,18 @@ function twoColumn(buttons) {
   return keyboard
 }
 
+const SESSION_TTL_MS = 5 * 60 * 1000 // 5 minutes
+
+function resetTimeout(chatId) {
+  if (state[chatId]?.timer) clearTimeout(state[chatId].timer)
+  state[chatId].timer = setTimeout(() => {
+    if (state[chatId]) {
+      delete state[chatId]
+      bot.sendMessage(chatId, '⌛ Session expired. Use /start to begin again.')
+    }
+  }, SESSION_TTL_MS)
+}
+
 // 1️⃣ /start command
 bot.onText(/\/start/, async (msg) => {
   const chatId = msg.chat.id
@@ -84,6 +96,7 @@ bot.onText(/\/start/, async (msg) => {
     reply_markup: { inline_keyboard: [quickRow, ...rootKeyboard] }
   })
   state[chatId].msgId = sent.message_id
+  resetTimeout(chatId)
 })
 
 // 2️⃣ /help command
@@ -102,6 +115,7 @@ bot.onText(/\/help/, (msg) => {
 bot.onText(/\/cancel/, (msg) => {
   const chatId = msg.chat.id
   if (state[chatId]) {
+    if (state[chatId].timer) clearTimeout(state[chatId].timer)
     delete state[chatId]
     bot.sendMessage(
       chatId,
@@ -110,7 +124,7 @@ bot.onText(/\/cancel/, (msg) => {
   } else {
     bot.sendMessage(chatId, 'No active session. Use /start to begin.')
   }
-})
+  })
 
 // Unknown command handler
 bot.onText(/^\/(?!start|help|cancel).+/, (msg) => {
@@ -125,6 +139,30 @@ bot.on('callback_query', async (query) => {
   const [step, value] = query.data.split(':')
 
   await bot.answerCallbackQuery(query.id)
+
+  if (query.data === 'restart') {
+    state[chatId] = { step: 'root', msgId: messageId }
+    resetTimeout(chatId)
+
+    const rootKB = twoColumn(
+      ROOTS.map(r => ({ text: r, callback_data: `root:${r}` }))
+    )
+    const quickRow = [
+      { text: '📖 Help',   callback_data: 'show_help' },
+      { text: '❌ Cancel', callback_data: 'quick_cancel' }
+    ]
+
+    await bot.editMessageText(
+      '*Choose a root note to jam*',
+      {
+        chat_id: chatId,
+        message_id: messageId,
+        parse_mode: 'Markdown',
+        reply_markup: { inline_keyboard: [quickRow, ...rootKB] }
+      }
+    )
+    return
+  } 
 
   if (query.data === 'back:root') {
   state[chatId] = { step: 'root', msgId: state[chatId].msgId }
@@ -180,11 +218,12 @@ bot.on('callback_query', async (query) => {
    }
  
    // 🔔 Cancel button
-   if (query.data === 'quick_cancel') {
-     if (state[chatId]) delete state[chatId]
-     bot.sendMessage(chatId, '❌ Sessão cancelada. Use /start para recomeçar.')
-     return
-  } 
+  if (query.data === 'quick_cancel') {
+    if (state[chatId]?.timer) clearTimeout(state[chatId].timer)
+    delete state[chatId]
+    bot.sendMessage(chatId, '❌ Sessão cancelada. Use /start para recomeçar.')
+    return
+  }
 
   if (!state[chatId]) {
     bot.sendMessage(chatId, '⚠️ Session expired. Send /start to begin again.')
@@ -195,6 +234,7 @@ bot.on('callback_query', async (query) => {
     if (step === 'root' && state[chatId].step === 'root') {
       state[chatId].root = value
       state[chatId].step = 'type'
+      resetTimeout(chatId);
 
       const kb = [
         [{ text: '⬅️ Back', callback_data: 'back:root' }],
@@ -216,6 +256,7 @@ bot.on('callback_query', async (query) => {
     if (step === 'type' && state[chatId].step === 'type') {
       state[chatId].type = value
       state[chatId].step = 'acc'
+      resetTimeout(chatId);
 
       const kb = [
         [{ text: '⬅️ Back', callback_data: 'back:type' }],
@@ -236,13 +277,16 @@ bot.on('callback_query', async (query) => {
 
     if (step === 'acc' && state[chatId].step === 'acc') {
       await bot.editMessageText(
-        `Accidental *${value || 'none'}* set! ✅\nCalculating…`,
+        `Accidental *${value || 'none'}* set! ✅\n\nCalculating…`,
         {
           chat_id: chatId,
           message_id: state[chatId].msgId,
-          parse_mode: 'Markdown'
+          parse_mode: 'Markdown',
         }
       )
+      //Typing message
+      await bot.sendChatAction(chatId, 'typing')
+      await new Promise(resolve => setTimeout(resolve, 700))   
 
       const { root, type } = state[chatId]
       const fullChord = `${root}${value}${type.replace(/^b/, '')}`
@@ -268,8 +312,13 @@ bot.on('callback_query', async (query) => {
         `${pad('Improv. chord')} | ${improvLabel}\n` +
         '</pre>'
 
-      await bot.sendMessage(chatId, htmlResult, { parse_mode: 'HTML' })
-      
+      await bot.editMessageText(htmlResult, {
+      chat_id: chatId,
+      message_id: state[chatId].msgId,
+      parse_mode: 'HTML',
+      reply_markup: { inline_keyboard: [[{ text: '🔁 New Chord', callback_data: 'restart' }]] }
+    })
+      if (state[chatId]?.timer) clearTimeout(state[chatId].timer);
       delete state[chatId]
     }
   } catch (err) {
