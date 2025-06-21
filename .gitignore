@@ -1,3 +1,4 @@
 node_modules/
 .env
 coverage/
+legacy/good-choice-chord/.git_backup_legacy

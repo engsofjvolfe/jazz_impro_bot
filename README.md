@@ -1,42 +1,56 @@
 # Jazz Impro Bot
 
-This project implements a Telegram bot that generates improvisation chords based on harmonic fifth rules. The core idea is to let the user select a tonic (root), chord type, and accidental (♭, ♯ or natural), and receive both the base chord notes and a suggested chord for improvisation.
+**Telegram bot** for generating improvisation chords based on harmonic‐fifth rules. Users select a root note, chord quality and accidental (♭, ♯ or natural), then receive both the base chord and a suggested chord for improvisation.
 
 ---
 
-## Features
+## 🚀 Features
 
-* Interaction via Telegram bot using inline buttons (inline keyboards).
-* Chord parser (`Chord.parse`) that accepts flexible input (e.g., `C#maj7`, `Dbm7b5`).
-* Generation of enharmonically correct notes, supporting simple and double accidentals (bb, ##).
-* Improvisation chord calculation using the rule of perfect or diminished fifth above.
-* Error handling with clear messages to the user.
+- **Interactive UI**  
+  Inline keyboard for seamless chord selection in Telegram.
 
----
+- **Flexible Parsing**  
+  Accepts notations like `C#maj7`, `Dbm7b5`, etc.
 
-## Architecture
+- **Enharmonic Accuracy**  
+  Supports simple and double accidentals (bb, ##).
 
-The code is organized into modules:
+- **Improvisation Suggestions**  
+  Calculates a perfect or diminished fifth above the chosen chord.
 
-* **src/bot.js**: Orchestrates interaction flow, chat states, and message sending.
-* **src/notes.js**: Normalization, chromatic mapping, and `spellNote` function (enharmonics).
-* **src/intervals.js**: Semitone table for degrees (1, 3M, 3m, 5P, 5b, 7M, 7m, 7d).
-* **src/chordFormulas.js**: Chord formulas by type (`maj7`, `m7`, `7`, `m7b5`, `dim7`).
-* **src/chord.js**: `Chord` class with parsing, note generation, and formatting methods.
-* **src/improvisation.js**: Fifth-based rule for deriving improvisation chords.
+- **Clear Error Handling**  
+  User-friendly messages for invalid inputs.
 
 ---
 
-## Installation
+## 📂 Project Structure
 
-1. Clone this repository:
+```
 
+/src
+├── bot.js             # Bot flow, state management, message handling
+├── notes.js           # Note normalization, chromatic mapping, enharmonic spelling
+├── intervals.js       # Semitone definitions for scale degrees
+├── chordFormulas.js   # Chord templates (maj7, m7, 7, m7b5, dim7)
+├── chord.js           # Chord class: parsing, note generation, formatting
+└── improvisation.js   # Logic for deriving improvisation chords
+
+/tests
+└── \*.test.js          # Jest test suites for each module
+
+```
+
+---
+
+## ⚙️ Installation
+
+1. **Clone the repository**  
    ```bash
-   git clone https://github.com/seu-usuario/jazz-impro-bot.git
+   git clone https://github.com/your-username/jazz-impro-bot.git
    cd jazz-impro-bot
-  ```
+   ```
 
-2. Install dependencies:
+2. **Install dependencies**
 
    ```bash
    npm install
@@ -44,67 +58,57 @@ The code is organized into modules:
 
 ---
 
-## Configuration
+## 🔧 Configuration
 
-1. Create a `.env` file at the project root with:
+Create a `.env` file at the project root:
 
-   ```env
-   TELEGRAM_TOKEN=<your_bot_token>
-   ```
+```env
+TELEGRAM_TOKEN=<YOUR_TELEGRAM_BOT_TOKEN>
+```
 
 ---
 
-## Usage
+## ▶️ Usage
 
-* Run the bot in development mode:
+* **Start the bot**
 
   ```bash
   npm start
   ```
-
-* On Telegram, send `/start` to begin selecting root, chord type, and accidental.
-
----
-
-## Development (REPL)
-
-To interactively experiment with modules without running the bot or creating tests, you can use Node's REPL:
-
-1. In `package.json`, add the script:
-
-   ```jsonc
-   "scripts": {
-     "repl": "node -i"
-   }
-   ```
-
-2. Run the REPL:
-
-   ```bash
-   npm run repl
-   ```
-
-3. In the Node prompt, import modules and test functions:
-
-   ```js
-   const { Chord } = require('./src/chord');
-   // Example: parse and get the notes of a chord
-   Chord.parse('C#maj7').getNotes();
-
-   const notes = require('./src/notes');
-   // Example: enarmonic spelling
-   notes.spellNote(10, 'D');
-
-   const improv = require('./src/improvisation');
-   // Example: improvisation chord a fifth above
-   improv.getFifthAbove('C', 'maj7');
-   ```
-
-For full function details and signatures, refer to the comments and headers in the source files under `src/` (e.g., `src/chord.js`, `src/notes.js`, `src/improvisation.js`).
+* **On Telegram**, send `/start` and follow the inline prompts to choose root, chord type and accidental.
 
 ---
 
-## Tests
+## 🛠️ Development & REPL
+
+* **Add REPL script** to `package.json`:
+
+  ```jsonc
+  "scripts": {
+    "repl": "node -i"
+  }
+  ```
+* **Launch REPL**:
+
+  ```bash
+  npm run repl
+  ```
+* **Example usage**:
+
+  ```js
+  const { Chord } = require('./src/chord');
+  console.log(Chord.parse('C#maj7').getNotes());
+
+  const notes = require('./src/notes');
+  console.log(notes.spellNote(10, 'D'));
+
+  const improv = require('./src/improvisation');
+  console.log(improv.getFifthAbove('C', 'maj7'));
+  ```
+
+---
+
+## 🧪 Tests
 
 Jest is already installed as a development dependency, but no tests have been implemented yet.
 
@@ -154,3 +158,30 @@ npm test -- --coverage
 ```
 
 This will let Jest generate an actual coverage report, showing lines and functions covered by your tests.
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repo and create a descriptive feature branch.
+2. Make atomic commits with clear messages.
+3. Open a Pull Request explaining your changes.
+
+---
+
+## 📬 Contact
+
+Questions or feedback? Open an issue or reach out via Telegram.
+
+---
+
+## 📜 License and Authorship
+
+This project was conceived by Jeanco Volfe, based on harmonic concepts that are publicly known and widely used in music education.
+
+While it does not represent a technically exclusive innovation, the logical structure and code implementation were originally developed starting in 2023 and finalized in 2025 with the support of AI tools for technical assistance.
+
+All source code in this repository is licensed under the **Apache License 2.0**.  
+See the [LICENSE](./LICENSE.md) file for details.
+
+© 2025 Jeanco. All rights to this code are reserved.
