@@ -34,41 +34,86 @@ const state = {};
 
 // 1️⃣ /start command
 bot.onText(/\/start/, (msg) => {
-  const chatId = msg.chat.id;
-  state[chatId] = { step: 'root' };
+  const chatId = msg.chat.id
+  state[chatId] = { step: 'root' }
 
-  const roots = ['C','D','E','F','G','A','B'];
-  const keyboard = roots.map(note => [{ text: note, callback_data: `root:${note}` }]);
+  const roots = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
+  const keyboard = []
+  for (let i = 0; i < roots.length; i += 2) {
+    const row = [
+      { text: roots[i], callback_data: `root:${roots[i]}` }
+    ]
+    if (roots[i + 1]) {
+      row.push({ text: roots[i + 1], callback_data: `root:${roots[i + 1]}` })
+    }
+    keyboard.push(row)
+  }
 
-  bot.sendMessage(chatId, 'Choose the root note:', {
-    reply_markup: { inline_keyboard: keyboard }
-  });
-});
+  bot.sendMessage(
+    chatId,
+    '🎷 *Welcome to Jazz Impro Bot!*\n' +
+      'Select a root note to begin or send /help for info.',
+    {
+      parse_mode: 'Markdown',
+      reply_markup: { inline_keyboard: keyboard }
+    }
+  )
+})
+
+// 2️⃣ /help command
+bot.onText(/\/help/, (msg) => {
+  const chatId = msg.chat.id
+  const text =
+    '*How to use:*\n' +
+    '1. Send /start to begin.\n' +
+    '2. Choose a root note, chord type and accidental.\n' +
+    '3. Receive a suggested improvisation chord.\n\n' +
+    'Use /cancel to abort at any time. Enjoy the jam! 🎶'
+  bot.sendMessage(chatId, text, { parse_mode: 'Markdown' })
+})
+
+// 3️⃣ /cancel command
+bot.onText(/\/cancel/, (msg) => {
+  const chatId = msg.chat.id
+  if (state[chatId]) {
+    delete state[chatId]
+    bot.sendMessage(chatId, '⛔️ Session cancelled. Send /start to try again.')
+  } else {
+    bot.sendMessage(chatId, 'No active session. Send /start to begin.')
+  }
+})
+
+// Unknown command handler
+bot.onText(/^\/(?!start|help|cancel).+/, (msg) => {
+  const chatId = msg.chat.id
+  bot.sendMessage(chatId, '🤔 Unknown command. Try /help for guidance.')
+})
 
 // 2️⃣ Handles button interactions
 bot.on('callback_query', async (callbackQuery) => {
-  // Acknowledge the callback to remove loading state
-  await bot.answerCallbackQuery(callbackQuery.id);
-  const data = callbackQuery.data;
-  const message = callbackQuery.message;
+  await bot.answerCallbackQuery(callbackQuery.id)
+  const data = callbackQuery.data
+  const message = callbackQuery.message
 
-  const chatId = message.chat.id;
-  const messageId = message.message_id;
-  const [step, value] = data.split(':');
+  const chatId = message.chat.id
+  const messageId = message.message_id
+  const [step, value] = data.split(':')
 
-  if (!state[chatId]) return;
+  if (!state[chatId]) {
+    bot.sendMessage(chatId, 'Session expired. Send /start to begin again.')
+    return
+  }
 
   // Root note selection
   if (step === 'root' && state[chatId].step === 'root') {
-    state[chatId].root = value;
-    state[chatId].step = 'type';
+    state[chatId].root = value
+    state[chatId].step = 'type'
 
-    // Confirms selection and removes previous buttons
-    await bot.editMessageText(`✅ Root note selected: *${value}*`, {
+    await bot.editMessageText(`Root note chosen: *${value}* ✅`, {
       chat_id: chatId,
       message_id: messageId,
       parse_mode: 'Markdown'
-    });
+    })
 
     // Sends chord type options
     const types = [
@@ -78,9 +123,9 @@ bot.on('callback_query', async (callbackQuery) => {
       { text: 'Half-dim.', callback_data: 'type:m7b5' },
       { text: 'Diminished',callback_data: 'type:dim7' }
     ];
-    await bot.sendMessage(chatId, 'Choose the chord type:', {
+    await bot.sendMessage(chatId, 'Choose the chord quality:', {
       reply_markup: { inline_keyboard: types.map(t => [t]) }
-    });
+    })
     return;
   }
 
@@ -90,7 +135,7 @@ bot.on('callback_query', async (callbackQuery) => {
     state[chatId].step = 'acc';
 
     // Confirms selection and removes previous buttons
-    await bot.editMessageText(`✅ Chord type selected: *${value}*`, {
+    await bot.editMessageText(`Chord quality chosen: *${value}* ✅`, {
       chat_id: chatId,
       message_id: messageId,
       parse_mode: 'Markdown'
@@ -102,9 +147,9 @@ bot.on('callback_query', async (callbackQuery) => {
       { text: '♯', callback_data: 'acc:#' },
       { text: 'natural', callback_data: 'acc:' }  // no accidental
     ];
-    await bot.sendMessage(chatId, 'Choose an accidental (optional):', {
+    await bot.sendMessage(chatId, 'Add an accidental if needed:', {
       reply_markup: { inline_keyboard: accs.map(a => [a]) }
-    });
+    })
     return;
   }
 
@@ -115,7 +160,7 @@ bot.on('callback_query', async (callbackQuery) => {
     const fullChord = `${root}${accidental}${type}`;
 
     // Confirms selection and removes previous buttons
-    await bot.editMessageText(`✅ Accidental selected: *${accidental || 'none'}*`, {
+    await bot.editMessageText(`Accidental chosen: *${accidental || 'none'}* ✅`, {
       chat_id: chatId,
       message_id: messageId,
       parse_mode: 'Markdown'
@@ -126,13 +171,14 @@ bot.on('callback_query', async (callbackQuery) => {
       const improv = getImprovisationChord(chord);
 
       // Sends final result
-      await bot.sendMessage(chatId,
+      await bot.sendMessage(
+        chatId,
         `🎵 *Base chord*: ${chord.toString()}` +
-        `\n🎸 *Improvisation chord*: ${improv.toString()}`, {
-        parse_mode: 'Markdown'
-      });
+          `\n🎸 *Improvisation chord*: ${improv.toString()}`,
+        { parse_mode: 'Markdown' }
+      )
     } catch (e) {
-      await bot.sendMessage(chatId, `⚠️ Error: ${e.message}`);
+      await bot.sendMessage(chatId, `⚠️ Error: ${e.message}`)
     }
 
     // Clears state
