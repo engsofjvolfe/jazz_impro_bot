@@ -11,13 +11,21 @@ const TelegramBot = require('node-telegram-bot-api');
 const { Chord } = require('./chord');
 const { getImprovisationChord } = require('./improvisation');
 
-// Initializes the bot using the token from .env
+// Initializes the bot using the token from .env or fake_token
 const token = process.env.TELEGRAM_TOKEN;
 if (!token) {
   console.error('⚠️  Define the TELEGRAM_TOKEN variable in the .env file');
   process.exit(1);
 }
-const bot = new TelegramBot(token, { polling: true });
+
+const isFakeToken = token === 'fake-token';
+
+// Só ativa o polling se o token for real
+const bot = new TelegramBot(token, { polling: !isFakeToken });
+
+if (isFakeToken) {
+  console.warn('⚠️  Rodando com token falso. Polling desativado para evitar erro 404.');
+}
 
 console.log('🤖 Bot successfully started. Awaiting commands...');
 
