@@ -1,11 +1,13 @@
 {
   "name": "jazz-impro-bot",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "main": "index.js",
   "scripts": {
     "start": "node src/bot.js",
     "test": "jest --coverage",
-    "repl": "node -i"
+    "repl": "node -i",
+    "sync-version": "node scripts/sync-version.js",
+    "prepare": "node scripts/sync-version.js"
   },
   "keywords": [],
   "author": "",
