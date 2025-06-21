@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),  
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.2.2] - 2025-06-21
+
+### Added
+- New `session.js` module for per-chat state management and session timeout
+- New `keyboards.js` module for generating inline keyboards (root, type, accidentals, quick actions)
+- New `handlers/flow/` folder with modular step handlers:
+  - `handleRoot.js`, `handleType.js`, `handleAccidental.js`
+  - `backNavigation.js`, `quickActions.js`
+- New centralized handlers in `handlers/commands.js` and `handlers/callbacks.js`
+- Documentation added under `/docs`:
+  - `app_flow.md`: describes the user flow (in Portuguese)
+  - `code_flow.md`: technical breakdown of code execution (in Portuguese)
+
+### Changed
+- `bot.js` is now a thin entry point that initializes the bot and delegates logic
+- `/start`, `/help`, and `/cancel` commands now use modular handler functions
+- Callback interactions (`callback_query`) fully migrated to `handlers/flow/*` files
+- Project structure section in `README.md` updated to reflect new modular layout
+
+### Internal
+- `TODO.md`: added a task to translate `/docs/*.md` into English for international consistency
+
+---
+
 ## [0.2.1] - 2025-06-21
 
 ### Added
@@ -20,6 +44,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Internal
 - Automatic synchronization between CHANGELOG.md and package.json version
 - Added Git hooks (`pre-commit`, `post-checkout`) and `"prepare"` script for consistency
+
+---
 
 ## [0.2.0] - 2025-06-21
 
