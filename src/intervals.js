@@ -1,4 +1,12 @@
 /**
+ * Copyright 2025 Jeanco Volfe
+ * Licensed under the Apache License, Version 2.0
+ * See LICENSE file in the project root for full license information.
+ */
+
+// src/intervals.js
+
+/**
  * Musical Intervals Module
  *
  * This file maps musical degrees (unison, thirds, fifths, sevenths)
