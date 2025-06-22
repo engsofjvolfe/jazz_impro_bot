@@ -31,7 +31,7 @@ async function handleCallback(query, bot, state, resetTimeout) {
   if (query.data === 'back:root') return handleBackToRoot(query, bot, state);
   if (query.data === 'back:type') return handleBackToType(query, bot, state);
 
-  if (!state[chatId]) {
+  if (!state[chatId]?.session) {
     return bot.sendMessage(chatId, t('errors.session_expired_restart', { lng }));
   }
 

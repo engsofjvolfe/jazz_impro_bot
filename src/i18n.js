@@ -4,7 +4,7 @@ const Backend = require('i18next-fs-backend');
 const { state } = require('./session');
 
 function detectLang(msg) {
-  return state[msg.chat.id]?.lang || msg.from.language_code || 'en';
+  return state[msg.chat.id]?.prefs?.lang || msg.from.language_code || 'en';
 }
 
 i18next

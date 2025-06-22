@@ -6,24 +6,25 @@
 
 // src/handlers/flow/backNavigation.js
 
-const { ROOTS, TYPES, twoColumn } = require('../../keyboards');
+const { getRootKeyboard, threeColumn, TYPES } = require('../../keyboards');
 const { t, detectLang } = require('../../i18n');
+const { getPrefs, getSession } = require('../../session');
 
 async function handleBackToRoot(query, bot, state) {
   const chatId = query.message.chat.id;
-  const lng = state[chatId].lang || detectLang(query.message);
+  const prefs = getPrefs(chatId);
+  const lng = prefs.lang || detectLang(query.message);
 
-  state[chatId] = { step: 'root', msgId: state[chatId].msgId, lang: lng };
+  const session = getSession(chatId);
+  session.step = 'root';
 
-  const kb = twoColumn(
-    ROOTS.map(r => ({ text: r, callback_data: `root:${r}` }))
-  );
+  const kb = getRootKeyboard(lng, 3);
 
   await bot.editMessageText(
     t('flow.choose_root', { lng }),
     {
       chat_id: chatId,
-      message_id: state[chatId].msgId,
+      message_id: session.msgId,
       parse_mode: 'Markdown',
       reply_markup: { inline_keyboard: kb }
     }
@@ -32,20 +33,24 @@ async function handleBackToRoot(query, bot, state) {
 
 async function handleBackToType(query, bot, state) {
   const chatId = query.message.chat.id;
-  const lng = state[chatId].lang || detectLang(query.message);
+  const prefs = getPrefs(chatId);
+  const lng = prefs.lang || detectLang(query.message);
 
-  state[chatId].step = 'type';
+  const session = getSession(chatId);
+  session.step = 'type';
 
   const kb = [
     [{ text: t('buttons.back', { lng }), callback_data: 'back:root' }],
-    ...TYPES.map(tObj => [{ text: t(`chord_types.${tObj.key}`, { lng }), callback_data: tObj.callback_data }])
+    ...threeColumn(
+      TYPES.map(tObj => ({ text: t(`chord_types.${tObj.key}`, { lng }), callback_data: tObj.callback_data }))
+    )
   ];
 
   await bot.editMessageText(
-    t('flow.root_chosen', { lng, root: state[chatId].root }),
+    t('flow.root_chosen', { lng, root: session.root }),
     {
       chat_id: chatId,
-      message_id: state[chatId].msgId,
+      message_id: session.msgId,
       parse_mode: 'Markdown',
       reply_markup: { inline_keyboard: kb }
     }

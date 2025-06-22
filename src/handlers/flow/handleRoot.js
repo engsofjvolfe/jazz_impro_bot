@@ -6,34 +6,37 @@
 
 // src/handlers/flow/handleRoot.js
 
-const { TYPES } = require('../../keyboards');
+const { TYPES, threeColumn } = require('../../keyboards');
 const { t, detectLang } = require('../../i18n');
+const { getPrefs, getSession } = require('../../session');
 
 async function handleRootStep(query, bot, state, resetTimeout) {
   const chatId = query.message.chat.id;
   const [, value] = query.data.split(':');
 
-  const lng = state[chatId].lang || detectLang(query.message);
+  const prefs = getPrefs(chatId);
+  const lng = prefs.lang || detectLang(query.message);
 
-  state[chatId].root = value;
-  state[chatId].step = 'type';
+  const session = getSession(chatId);
+  session.root = value;
+  session.step = 'type';
   resetTimeout(chatId, bot, t('errors.session_timeout', { lng }));
 
   const kb = [
     [{ text: t('buttons.back', { lng }), callback_data: 'back:root' }],
-    ...TYPES.map(tObj => [
-      {
+    ...threeColumn(
+      TYPES.map(tObj => ({
         text: t(`chord_types.${tObj.key}`, { lng }),
         callback_data: tObj.callback_data
-      }
-    ])
+      }))
+    )
   ];
 
   await bot.editMessageText(
     t('flow.root_chosen', { lng, root: value }),
     {
       chat_id: chatId,
-      message_id: state[chatId].msgId,
+      message_id: session.msgId,
       parse_mode: 'Markdown',
       reply_markup: { inline_keyboard: kb }
     }

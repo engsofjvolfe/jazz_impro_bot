@@ -6,29 +6,25 @@
 
 // src/handlers/flow/quickActions.js
 
-const { ROOTS, twoColumn } = require('../../keyboards');
+const { getRootKeyboard, getQuickRow } = require('../../keyboards');
 const { t, detectLang } = require('../../i18n');
+const { getPrefs, getSession, clearSession } = require('../../session');
 
 async function handleRestart(query, bot, state, resetTimeout) {
   const chatId = query.message.chat.id;
 
-  const previousId = state[chatId]?.msgId;
-  const messageId = previousId || query.message.message_id;
+  const prefs = getPrefs(chatId);
+  const lng = prefs.lang || detectLang(query.message);
 
-  const current = state[chatId] || {};
-  const lng = current.lang || detectLang(query.message);
+  const messageId = state[chatId]?.session?.msgId || query.message.message_id;
 
-  state[chatId] = { ...current, step: 'root', msgId: messageId, lang: lng };
+  const session = getSession(chatId);
+  session.step = 'root';
+  session.msgId = messageId;
   resetTimeout(chatId, bot, t('errors.session_timeout', { lng }));
 
-  const rootKB = twoColumn(
-    ROOTS.map(r => ({ text: r, callback_data: `root:${r}` }))
-  );
-  const quickKB = twoColumn([
-    { text: t('buttons.help', { lng }),  callback_data: 'show_help' },
-    { text: t('buttons.cancel', { lng }), callback_data: 'quick_cancel' },
-    { text: t('buttons.lang', { lng }),  callback_data: 'show_lang' }
-  ]);
+  const rootKB = getRootKeyboard(lng, 3);
+  const quickRow = getQuickRow(lng);
 
   await bot.editMessageText(
     t('flow.choose_root', { lng }),
@@ -36,7 +32,7 @@ async function handleRestart(query, bot, state, resetTimeout) {
       chat_id: chatId,
       message_id: messageId,
       parse_mode: 'Markdown',
-      reply_markup: { inline_keyboard: [...quickKB, ...rootKB] }
+      reply_markup: { inline_keyboard: [quickRow, ...rootKB] }
     }
   );
 }
@@ -44,7 +40,7 @@ async function handleRestart(query, bot, state, resetTimeout) {
 
 async function handleShowHelp(query, bot, state) {
   const chatId = query.message.chat.id;
-  const lng = (state[chatId]?.lang) || detectLang(query.message);
+  const lng = state[chatId]?.prefs?.lang || detectLang(query.message);
 
   await bot.answerCallbackQuery(query.id, {
     text: t('quick.help.text', { lng }),
@@ -55,12 +51,14 @@ async function handleShowHelp(query, bot, state) {
 
 function handleQuickCancel(query, bot, state) {
   const chatId = query.message.chat.id;
-  const lng = state[chatId].lang || detectLang(query.message);
+  const lng = state[chatId]?.prefs?.lang || detectLang(query.message);
 
-  if (state[chatId]?.timer) clearTimeout(state[chatId].timer);
-  delete state[chatId];
+  clearSession(chatId);
 
-  return bot.sendMessage(chatId, t('quick.cancelled', { lng }));
+  return bot.answerCallbackQuery(query.id, {
+    text: t('quick.cancelled', { lng }),
+    show_alert: false
+  });
 }
 
 function handleShowLang(query, bot) {
@@ -80,8 +78,8 @@ async function handleSetLang(query, bot, state, resetTimeout) {
   const chatId = query.message.chat.id;
   const [, code] = query.data.split(':');
 
-  if (!state[chatId]) state[chatId] = {};
-  state[chatId].lang = code;
+  const prefs = getPrefs(chatId);
+  prefs.lang = code;
 
   // Confirmação rápida (toast)
   await bot.answerCallbackQuery(query.id, {

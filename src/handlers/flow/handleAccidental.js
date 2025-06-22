@@ -9,6 +9,7 @@
 const { Chord } = require('../../chord');
 const { getImprovisationChord } = require('../../improvisation');
 const { t, detectLang } = require('../../i18n');
+const { getPrefs, getSession, clearSession } = require('../../session');
 
 function pad(str, len = 25) {
   return str.length >= len ? str : str + ' '.repeat(len - str.length);
@@ -17,13 +18,14 @@ function pad(str, len = 25) {
 async function handleAccStep(query, bot, state) {
   const chatId = query.message.chat.id;
   const [, value] = query.data.split(':');
-  const lng = state[chatId].lang || detectLang(query.message);
+  const prefs = getPrefs(chatId);
+  const lng = prefs.lang || detectLang(query.message);
 
   await bot.editMessageText(
     t('flow.acc_set', { lng, accidental: value || 'none' }),
     {
       chat_id: chatId,
-      message_id: state[chatId].msgId,
+      message_id: getSession(chatId).msgId,
       parse_mode: 'Markdown',
     }
   );
@@ -31,7 +33,7 @@ async function handleAccStep(query, bot, state) {
   await bot.sendChatAction(chatId, 'typing');
   await new Promise(res => setTimeout(res, 700));
 
-  const { root, type } = state[chatId];
+  const { root, type } = getSession(chatId);
   const fullChord = `${root}${value}${type.replace(/^b/, '')}`;
   const chord = Chord.parse(fullChord);
   const improvChord = getImprovisationChord(chord);
@@ -48,15 +50,14 @@ async function handleAccStep(query, bot, state) {
 
   await bot.editMessageText(htmlResult, {
     chat_id: chatId,
-    message_id: state[chatId].msgId,
+    message_id: getSession(chatId).msgId,
     parse_mode: 'HTML',
     reply_markup: {
       inline_keyboard: [[{ text: t('buttons.new_chord', { lng }), callback_data: 'restart' }]]
     }
   });
 
-  if (state[chatId]?.timer) clearTimeout(state[chatId].timer);
-  delete state[chatId];
+  clearSession(chatId);
 }
 
 module.exports = { handleAccStep };
