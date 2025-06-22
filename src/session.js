@@ -8,13 +8,15 @@
 
 const state = {};
 const SESSION_TTL_MS = 5 * 60 * 1000;
+const { t } = require('./i18n');
 
 function resetTimeout(chatId, bot) {
   if (state[chatId]?.timer) clearTimeout(state[chatId].timer)
   state[chatId].timer = setTimeout(() => {
     if (state[chatId]) {
+      const lng = state[chatId].lang || 'en'
       delete state[chatId]
-      bot.sendMessage(chatId, '⌛ Session expired. Use /start to begin again.')
+      bot.sendMessage(chatId, t('session.expired', { lng }))
     }
   }, SESSION_TTL_MS)
 }

@@ -7,25 +7,23 @@
 // src/handlers/commands.js
 
 const { ROOTS, twoColumn } = require('../keyboards');
+const { t, detectLang } = require('../i18n');
 
 function handleStart(bot, msg, state, resetTimeout) {
   const chatId = msg.chat.id
+  const lng = detectLang(msg)
   state[chatId] = { step: 'root' }
 
   const rootKeyboard = twoColumn(
     ROOTS.map(r => ({ text: r, callback_data: `root:${r}` }))
   )
   const quickRow = [
-    { text: '📖 Help',   callback_data: 'show_help' },
-    { text: '❌ Cancel', callback_data: 'quick_cancel' }
+    { text: t('buttons.help', { lng }), callback_data: 'show_help' },
+    { text: t('buttons.cancel', { lng }), callback_data: 'quick_cancel' },
+    { text: t('buttons.language', { lng }), callback_data: 'show_lang' }
   ]
 
-  const text =
-    '🎷 *Welcome to Jazz Impro Bot!*\n\n' +
-    '*Quick actions*\n' +
-    '📖 Help – instructions\n' +
-    '❌ Cancel – end session\n\n' +
-    '👇 *Choose a root note to jam*'
+  const text = t('commands.start.welcome', { lng })
 
   bot.sendMessage(chatId, text, {
     parse_mode: 'Markdown',
@@ -38,27 +36,36 @@ function handleStart(bot, msg, state, resetTimeout) {
 
 function handleHelp(bot, msg) {
   const chatId = msg.chat.id
-  const text =
-    '*How to jam with Jazz Impro Bot* 🎶\n' +
-    '1. Send /start and pick a root note.\n' +
-    '2. Choose the chord quality and an accidental if needed.\n' +
-    "3. I'll suggest a chord a fifth above to inspire your solo.\n\n" +
-    'Use /cancel to stop and /start to begin again.'
+  const lng = detectLang(msg)
+  const text = t('commands.help.text', { lng })
   bot.sendMessage(chatId, text, { parse_mode: 'Markdown' })
 }
 
 function handleCancel(bot, msg, state) {
   const chatId = msg.chat.id
+  const lng = detectLang(msg)
   if (state[chatId]) {
     if (state[chatId].timer) clearTimeout(state[chatId].timer)
     delete state[chatId]
     bot.sendMessage(
       chatId,
-      "🚫 Session cancelled. Use /start when you're ready to jam again."
+      t('commands.cancel.done', { lng })
     )
   } else {
-    bot.sendMessage(chatId, 'No active session. Use /start to begin.')
+    bot.sendMessage(chatId, t('commands.cancel.no_active', { lng }))
   }
 }
 
-module.exports = { handleStart, handleHelp, handleCancel }
+function handleLang(bot, msg, state, code) {
+  const chatId = msg.chat.id
+  const lng = detectLang(msg)
+  const lang = code.trim().toLowerCase()
+  if (!['en', 'pt'].includes(lang)) {
+    return bot.sendMessage(chatId, t('commands.lang.unsupported', { lng }))
+  }
+  if (!state[chatId]) state[chatId] = {}
+  state[chatId].lang = lang
+  bot.sendMessage(chatId, t('commands.lang.updated', { lng: lang }))
+}
+
+module.exports = { handleStart, handleHelp, handleCancel, handleLang }

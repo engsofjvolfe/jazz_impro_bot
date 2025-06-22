@@ -8,6 +8,7 @@
 
 const { Chord } = require('../../chord');
 const { getImprovisationChord } = require('../../improvisation');
+const { t, detectLang } = require('../../i18n');
 
 function pad(str, len = 25) {
   return str.length >= len ? str : str + ' '.repeat(len - str.length);
@@ -16,9 +17,10 @@ function pad(str, len = 25) {
 async function handleAccStep(query, bot, state) {
   const chatId = query.message.chat.id;
   const [, value] = query.data.split(':');
+  const lng = detectLang(query.message);
 
   await bot.editMessageText(
-    `Accidental *${value || 'none'}* set! ✅\n\nCalculating…`,
+    t('flow.calculating', { lng, value }),
     {
       chat_id: chatId,
       message_id: state[chatId].msgId,
@@ -38,10 +40,10 @@ async function handleAccStep(query, bot, state) {
   const improvLabel = `${improvChord.toString().split(':')[0]} (${improvChord.getNotes().join(' ')})`;
 
   const htmlResult =
-    '🎼 <b>Resultado</b>\n' +
+    t('flow.result.title', { lng }) +
     '<pre>' +
-    `${pad('Base chord')} | ${baseLabel}\n` +
-    `${pad('Improv. chord')} | ${improvLabel}\n` +
+    `${pad(t('flow.result.base_label', { lng }))} | ${baseLabel}\n` +
+    `${pad(t('flow.result.improv_label', { lng }))} | ${improvLabel}\n` +
     '</pre>';
 
   await bot.editMessageText(htmlResult, {
@@ -49,7 +51,7 @@ async function handleAccStep(query, bot, state) {
     message_id: state[chatId].msgId,
     parse_mode: 'HTML',
     reply_markup: {
-      inline_keyboard: [[{ text: '🔁 New Chord', callback_data: 'restart' }]]
+      inline_keyboard: [[{ text: t('buttons.new_chord', { lng }), callback_data: 'restart' }]]
     }
   });
 
