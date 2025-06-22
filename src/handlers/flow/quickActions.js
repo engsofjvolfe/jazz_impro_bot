@@ -36,16 +36,18 @@ async function handleRestart(query, bot, state, resetTimeout) {
 
 function handleShowHelp(query, bot) {
   const chatId = query.message.chat.id;
+  const helpText =
+    '🎷 How to jam:\n\n' +
+    '1) choose root note\n' +
+    '2) choose quality & accidental\n' +
+    '3) improvise with the fifth-up chord\n\n' +
+    'Use /cancel to stop.';
 
-  return bot.sendMessage(chatId,
-    '*How to jam with Jazz Impro Bot* 🎶\n' +
-    '1. Send /start and pick a root note.\n' +
-    '2. Choose chord quality and accidental.\n' +
-    '3. I’ll suggest an improvisation chord.\n\n' +
-    'Use /cancel (ou botão Cancelar) para parar.',
-    { parse_mode: 'Markdown' }
-  );
-}
+  return bot.answerCallbackQuery(query.id, {
+    text: helpText,
+    show_alert: true   
+  });
+ }
 
 function handleQuickCancel(query, bot, state) {
   const chatId = query.message.chat.id;
@@ -53,7 +55,7 @@ function handleQuickCancel(query, bot, state) {
   if (state[chatId]?.timer) clearTimeout(state[chatId].timer);
   delete state[chatId];
 
-  return bot.sendMessage(chatId, '❌ Sessão cancelada. Use /start para recomeçar.');
+  return bot.sendMessage(chatId, '❌ Session canceled. Type /start to begin again');
 }
 
 module.exports = {

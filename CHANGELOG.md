@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),  
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.2.3] - 2025-06-22
+
+### Added
+- `BEGINNER_GUIDE.md` -  The beginner-friendly guide to use the bot.
+
+### Changed
+- `📖 Help` button now opens a modal-style popup via `answerCallbackQuery` (`quickActions.js`) instead of sending a new message, keeping chat history clean.
+
+---
+
 ## [0.2.2] - 2025-06-21
 
 ### Added

@@ -9,6 +9,24 @@ These limitations are known and will be addressed in future releases as the harm
 
 If you notice any odd behavior, feel free to open an issue or report it.
 
+> ⚠️ This bot is **not hosted or running publicly**.  
+> If you want to use it, you must clone the repository, add your own Telegram bot token, and run it locally.
+
+⚠️ No experience programming see [`Beginner Guide`](./BEGGINER_GUIDE.md)
+---
+
+## 🎶 What does it do?
+
+This bot helps musicians generate **improvisation targets** by suggesting another chord a perfect or diminished fifth above the selected one — a trick derived from harmonic movement patterns often used in jazz improvisation.
+
+---
+
+## 🧰 Requirements
+
+- [Node.js](https://nodejs.org) (version 18+ recommended)
+- A [Telegram](https://telegram.org) account and a bot created via [@BotFather](https://t.me/BotFather)
+- A valid bot token from BotFather
+
 ---
 
 ## 🚀 Features
@@ -89,7 +107,10 @@ TELEGRAM_TOKEN=<YOUR_TELEGRAM_BOT_TOKEN>
 
 ---
 
-## ▶️ Usage
+## ▶️ Usage (uses long pooling)
+
+No need for a public server or HTTPS.
+The bot will continuously poll Telegram for updates.
 
 * **Start the bot**
 
