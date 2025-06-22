@@ -18,7 +18,7 @@ async function handleBackToRoot(query, bot, state) {
   const session = getSession(chatId);
   session.step = 'root';
 
-  const kb = getRootKeyboard(lng, 3);
+  const kb = getRootKeyboard(lng, 2);
 
   await bot.editMessageText(
     t('flow.choose_root', { lng }),

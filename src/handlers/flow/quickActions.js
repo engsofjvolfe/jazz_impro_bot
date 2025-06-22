@@ -16,19 +16,18 @@ async function handleRestart(query, bot, state, resetTimeout) {
   const prefs = getPrefs(chatId);
   const lng = prefs.lang || detectLang(query.message);
 
-  const messageId = query.message.message_id;
+  const session = getSession(chatId);
+  const messageId = session.msgId || query.message.message_id;
 
-  const prevId = state[chatId]?.session?.msgId;
-  if (prevId && prevId !== messageId) {
-    bot.deleteMessage(chatId, prevId).catch(() => {});
+  const prevId = session.msgId;
+  if (!prevId) {
+    session.msgId = messageId;
   }
 
-  const session = getSession(chatId);
   session.step = 'root';
-  session.msgId = messageId;
   resetTimeout(chatId, bot, t('errors.session_timeout', { lng }));
 
-  const rootKB = getRootKeyboard(lng, 3);
+  const rootKB = getRootKeyboard(lng, 2);
   const quickRow = getQuickRow(lng);
 
   await bot.editMessageText(

@@ -46,7 +46,7 @@ function getQuickRow(lng) {
   ]
 }
 
-function getRootKeyboard(lng, nCols = 3) {
+function getRootKeyboard(lng, nCols = 2) {
   const btns = ROOTS.map(r => ({ text: r, callback_data: `root:${r}` }))
   return nColumn(btns, nCols)
 }

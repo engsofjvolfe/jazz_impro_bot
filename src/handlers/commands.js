@@ -22,7 +22,7 @@ function handleStart(bot, msg, state, resetTimeout) {
   const session = getSession(chatId)
   session.step = 'root'
 
-  const rootKeyboard = getRootKeyboard(lng, 3)
+  const rootKeyboard = getRootKeyboard(lng, 2)
   const quickRow = getQuickRow(lng)
 
   const text = t('commands.start.welcome', { lng })
