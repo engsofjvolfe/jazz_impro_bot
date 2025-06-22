@@ -8,16 +8,16 @@
 
 const ROOTS = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
 const TYPES = [
-  { text: 'Major', callback_data: 'type:maj7' },
-  { text: 'Minor', callback_data: 'type:m7' },
-  { text: 'Dominant', callback_data: 'type:7' },
-  { text: 'Half-dim.', callback_data: 'type:m7b5' },
-  { text: 'Diminished', callback_data: 'type:dim7' }
+  { text: 'chord_types.major', callback_data: 'type:maj7' },
+  { text: 'chord_types.minor', callback_data: 'type:m7' },
+  { text: 'chord_types.dominant', callback_data: 'type:7' },
+  { text: 'chord_types.half_dim', callback_data: 'type:m7b5' },
+  { text: 'chord_types.diminished', callback_data: 'type:dim7' }
 ]
 const ACCS = [
-  { text: '♮', callback_data: 'acc:' },
-  { text: '♭', callback_data: 'acc:b' },
-  { text: '♯', callback_data: 'acc:#' },
+  { text: 'accidentals.natural', callback_data: 'acc:' },
+  { text: 'accidentals.flat', callback_data: 'acc:b' },
+  { text: 'accidentals.sharp', callback_data: 'acc:#' },
 ]
 
 function twoColumn(buttons) {

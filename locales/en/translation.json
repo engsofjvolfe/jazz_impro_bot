@@ -1,0 +1,89 @@
+{
+  "startup": {
+    "missing_token": "⚠️  Define the TELEGRAM_TOKEN variable in the .env file",
+    "fake_token_warning": "⚠️  Running with fake token. Polling disabled to avoid 404 error.",
+    "ready": "🤖 Bot successfully started. Awaiting commands..."
+  },
+  "commands": {
+    "unknown": "🤔 I don't recognize that command. Try /help.",
+    "start": {
+      "welcome": "🎷 *Welcome to Jazz Impro Bot!*\n\n*Quick actions*\n📖 Help – instructions\n❌ Cancel – end session\n\n👇 *Choose a root note to jam*"
+    },
+    "help": {
+      "text": "*How to jam with Jazz Impro Bot* 🎶\n1. Send /start and pick a root note.\n2. Choose the chord quality and an accidental if needed.\n3. I'll suggest a chord a fifth above to inspire your solo.\n\nUse /cancel to stop and /start to begin again."
+    },
+    "cancel": {
+      "done": "🚫 Session cancelled. Use /start when you're ready to jam again.",
+      "no_active": "No active session. Use /start to begin."
+    },
+    "lang": {
+      "updated": "Language updated.",
+      "unsupported": "Unsupported language.",
+      "choose": "Choose a language:"
+    }
+  },
+  "quick_actions": {
+    "help": {
+      "text": "*How to jam with Jazz Impro Bot* 🎶\n1. Send /start and pick a root note.\n2. Choose chord quality and accidental.\n3. I’ll suggest an improvisation chord.\n\nUse /cancel (ou botão Cancelar) para parar."
+    },
+    "cancel": {
+      "done": "❌ Sessão cancelada. Use /start para recomeçar."
+    }
+  },
+  "callbacks": {
+    "expired": "⚠️ Session expired. Send /start to begin again.",
+    "error": "⚠️ Something went wrong. Please try again later."
+  },
+  "session": {
+    "expired": "⌛ Session expired. Use /start to begin again."
+  },
+  "flow": {
+    "choose_root": {
+      "prompt": "*Choose a root note to jam*"
+    },
+    "choose_type": {
+      "prompt": "Root note *${value}* chosen! ✅\\nChoose the chord quality:"
+    },
+    "choose_acc": {
+      "prompt": "Quality *${value}* selected! ✅\\nAdd an accidental if needed:"
+    },
+    "calculating": "Accidental *${value || 'none'}* set! ✅\\n\\nCalculating…",
+    "result": {
+      "title": "🎼 <b>Resultado</b>\\n",
+      "base_label": "Base chord",
+      "improv_label": "Improv. chord"
+    }
+  },
+  "buttons": {
+    "help": "📖 Help",
+    "cancel": "❌ Cancel",
+    "back": "⬅️ Back",
+    "new_chord": "🔁 New Chord",
+    "language": "⚙️ Language"
+  },
+  "notes": {
+    "C": "C",
+    "D": "D",
+    "E": "E",
+    "F": "F",
+    "G": "G",
+    "A": "A",
+    "B": "B"
+  },
+  "chord_types": {
+    "major": "Major",
+    "minor": "Minor",
+    "dominant": "Dominant",
+    "half_dim": "Half-dim.",
+    "diminished": "Diminished"
+  },
+  "accidentals": {
+    "natural": "♮",
+    "flat": "♭",
+    "sharp": "♯"
+  },
+  "languages": {
+    "en": "English",
+    "pt": "Português"
+  }
+}

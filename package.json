@@ -6,6 +6,7 @@
     "start": "node src/bot.js",
     "test": "jest --coverage",
     "repl": "node -i",
+    "i18n:lint": "echo 'stub'",
     "sync-version": "node scripts/sync-version.js",
     "prepare": "node scripts/sync-version.js"
   },
@@ -17,7 +18,9 @@
     "@vitalets/google-translate-api": "^9.2.1",
     "dotenv": "^16.5.0",
     "glob": "^11.0.3",
-    "node-telegram-bot-api": "^0.66.0"
+    "node-telegram-bot-api": "^0.66.0",
+    "i18next": "^23.10.1",
+    "i18next-fs-backend": "^1.3.1"
   },
   "devDependencies": {
     "eslint": "^9.29.0",

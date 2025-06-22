@@ -1,0 +1,89 @@
+{
+  "startup": {
+    "missing_token": "",
+    "fake_token_warning": "",
+    "ready": ""
+  },
+  "commands": {
+    "unknown": "",
+    "start": {
+      "welcome": ""
+    },
+    "help": {
+      "text": ""
+    },
+    "cancel": {
+      "done": "",
+      "no_active": ""
+    },
+    "lang": {
+      "updated": "",
+      "unsupported": "",
+      "choose": ""
+    }
+  },
+  "quick_actions": {
+    "help": {
+      "text": ""
+    },
+    "cancel": {
+      "done": ""
+    }
+  },
+  "callbacks": {
+    "expired": "",
+    "error": ""
+  },
+  "session": {
+    "expired": ""
+  },
+  "flow": {
+    "choose_root": {
+      "prompt": ""
+    },
+    "choose_type": {
+      "prompt": ""
+    },
+    "choose_acc": {
+      "prompt": ""
+    },
+    "calculating": "",
+    "result": {
+      "title": "",
+      "base_label": "",
+      "improv_label": ""
+    }
+  },
+  "buttons": {
+    "help": "",
+    "cancel": "",
+    "back": "",
+    "new_chord": "",
+    "language": ""
+  },
+  "notes": {
+    "C": "",
+    "D": "",
+    "E": "",
+    "F": "",
+    "G": "",
+    "A": "",
+    "B": ""
+  },
+  "chord_types": {
+    "major": "",
+    "minor": "",
+    "dominant": "",
+    "half_dim": "",
+    "diminished": ""
+  },
+  "accidentals": {
+    "natural": "",
+    "flat": "",
+    "sharp": ""
+  },
+  "languages": {
+    "en": "",
+    "pt": ""
+  }
+}

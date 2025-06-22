@@ -7,10 +7,12 @@
 // src/handlers/flow/quickActions.js
 
 const { ROOTS, twoColumn } = require('../../keyboards');
+const { t, detectLang } = require('../../i18n');
 
 async function handleRestart(query, bot, state, resetTimeout) {
   const chatId = query.message.chat.id;
   const messageId = query.message.message_id;
+  const lng = detectLang(query.message);
 
   state[chatId] = { step: 'root', msgId: messageId };
   resetTimeout(chatId, bot);
@@ -19,12 +21,13 @@ async function handleRestart(query, bot, state, resetTimeout) {
     ROOTS.map(r => ({ text: r, callback_data: `root:${r}` }))
   );
   const quickRow = [
-    { text: '📖 Help', callback_data: 'show_help' },
-    { text: '❌ Cancel', callback_data: 'quick_cancel' }
+    { text: t('buttons.help', { lng }), callback_data: 'show_help' },
+    { text: t('buttons.cancel', { lng }), callback_data: 'quick_cancel' },
+    { text: t('buttons.language', { lng }), callback_data: 'show_lang' }
   ];
 
   await bot.editMessageText(
-    '*Choose a root note to jam*',
+    t('flow.choose_root.prompt', { lng }),
     {
       chat_id: chatId,
       message_id: messageId,
@@ -36,13 +39,10 @@ async function handleRestart(query, bot, state, resetTimeout) {
 
 function handleShowHelp(query, bot) {
   const chatId = query.message.chat.id;
+  const lng = detectLang(query.message);
 
   return bot.sendMessage(chatId,
-    '*How to jam with Jazz Impro Bot* 🎶\n' +
-    '1. Send /start and pick a root note.\n' +
-    '2. Choose chord quality and accidental.\n' +
-    '3. I’ll suggest an improvisation chord.\n\n' +
-    'Use /cancel (ou botão Cancelar) para parar.',
+    t('quick_actions.help.text', { lng }),
     { parse_mode: 'Markdown' }
   );
 }
@@ -50,14 +50,38 @@ function handleShowHelp(query, bot) {
 function handleQuickCancel(query, bot, state) {
   const chatId = query.message.chat.id;
 
+  const lng = detectLang(query.message);
+
   if (state[chatId]?.timer) clearTimeout(state[chatId].timer);
   delete state[chatId];
 
-  return bot.sendMessage(chatId, '❌ Sessão cancelada. Use /start para recomeçar.');
+  return bot.sendMessage(chatId, t('quick_actions.cancel.done', { lng }));
+}
+
+function handleShowLang(query, bot) {
+  const chatId = query.message.chat.id;
+  const lng = detectLang(query.message);
+  const keyboard = [[
+    { text: t('languages.en', { lng }), callback_data: 'lang:en' },
+    { text: t('languages.pt', { lng }), callback_data: 'lang:pt' }
+  ]];
+  return bot.sendMessage(chatId, t('commands.lang.choose', { lng }), {
+    reply_markup: { inline_keyboard: keyboard }
+  });
+}
+
+function handleSetLang(query, bot, state) {
+  const chatId = query.message.chat.id;
+  const [, code] = query.data.split(':');
+  if (!state[chatId]) state[chatId] = {};
+  state[chatId].lang = code;
+  return bot.answerCallbackQuery(query.id, { text: t('commands.lang.updated', { lng: code }) });
 }
 
 module.exports = {
   handleRestart,
   handleShowHelp,
-  handleQuickCancel
+  handleQuickCancel,
+  handleShowLang,
+  handleSetLang
 };
