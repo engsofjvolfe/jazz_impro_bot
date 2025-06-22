@@ -16,7 +16,12 @@ async function handleRestart(query, bot, state, resetTimeout) {
   const prefs = getPrefs(chatId);
   const lng = prefs.lang || detectLang(query.message);
 
-  const messageId = state[chatId]?.session?.msgId || query.message.message_id;
+  const messageId = query.message.message_id;
+
+  const prevId = state[chatId]?.session?.msgId;
+  if (prevId && prevId !== messageId) {
+    bot.deleteMessage(chatId, prevId).catch(() => {});
+  }
 
   const session = getSession(chatId);
   session.step = 'root';

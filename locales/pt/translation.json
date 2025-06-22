@@ -11,7 +11,7 @@
   },
   "commands": {
     "start": {
-      "welcome": "🎷 *Bem-vindo ao Jazz Impro Bot!*\n\n*Ações rápidas*\n📖 Ajuda – instruções\n❌ Cancelar – encerrar sessão\n\n👇 *Escolha uma nota para começar a improvisar*"
+      "welcome": "🎷 *Bem-vindo ao Jazz Impro Bot!*\n\n*Ações rápidas*\n📖 Ajuda – instruções\n❌ Cancelar – encerrar sessão\n\n👇 *Escolha uma nota para improvisar*"
     },
     "help": {
       "text": "*Como improvisar com o Jazz Impro Bot* 🎶\n1. Envie /start e escolha uma nota.\n2. Escolha a qualidade do acorde e um acidente, se necessário.\n3. Eu sugerirei um acorde uma quinta acima para inspirar seu solo.\n\nUse /cancel para parar e /start para recomeçar."
@@ -44,7 +44,7 @@
   },
   "quick": {
     "help": {
-      "text": "*Como improvisar com o Jazz Impro Bot* 🎶\n1. Envie /start e escolha uma nota.\n2. Escolha a qualidade e um acidente.\n3. Eu sugerirei um acorde para improvisar.\n\nUse /cancel (ou botão Cancelar) para parar."
+      "text": "*Como improvisar com o Jazz Impro Bot* 🎶\n1. Envie /start e escolha uma nota.\n2. Escolha qualidade e acidente.\n3. Sugerirei um acorde para improvisar.\n\nUse /cancel (ou botão Cancelar) para parar."
     },
     "cancelled": "❌ Sessão cancelada. Use /start para recomeçar."
   },

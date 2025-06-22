@@ -15,6 +15,10 @@ function handleStart(bot, msg, state, resetTimeout) {
   const prefs = getPrefs(chatId)
   const lng = prefs.lang || detectLang(msg)
 
+  const oldId = state[chatId]?.session?.msgId
+  if (oldId) bot.deleteMessage(chatId, oldId).catch(() => {})
+
+  clearSession(chatId)
   const session = getSession(chatId)
   session.step = 'root'
 
@@ -23,13 +27,15 @@ function handleStart(bot, msg, state, resetTimeout) {
 
   const text = t('commands.start.welcome', { lng })
 
-  bot.sendMessage(chatId, text, {
-    parse_mode: 'Markdown',
-    reply_markup: { inline_keyboard: [quickRow, ...rootKeyboard] }
-  }).then(sent => {
-    session.msgId = sent.message_id
-    resetTimeout(chatId, bot, t('errors.session_timeout', { lng }))
-  })
+  bot
+    .sendMessage(chatId, text, {
+      parse_mode: 'Markdown',
+      reply_markup: { inline_keyboard: [quickRow, ...rootKeyboard] }
+    })
+    .then(sent => {
+      session.msgId = sent.message_id
+      resetTimeout(chatId, bot, t('errors.session_timeout', { lng }))
+    })
 }
 
 function handleHelp(bot, msg) {
