@@ -8,11 +8,11 @@
 
 const ROOTS = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
 const TYPES = [
-  { text: 'Major', callback_data: 'type:maj7' },
-  { text: 'Minor', callback_data: 'type:m7' },
-  { text: 'Dominant', callback_data: 'type:7' },
-  { text: 'Half-dim.', callback_data: 'type:m7b5' },
-  { text: 'Diminished', callback_data: 'type:dim7' }
+  { key: 'major', callback_data: 'type:maj7' },
+  { key: 'minor', callback_data: 'type:m7' },
+  { key: 'dominant', callback_data: 'type:7' },
+  { key: 'half_dim', callback_data: 'type:m7b5' },
+  { key: 'diminished', callback_data: 'type:dim7' }
 ]
 const ACCS = [
   { text: '♮', callback_data: 'acc:' },

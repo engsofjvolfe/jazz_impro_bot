@@ -7,57 +7,99 @@
 // src/handlers/flow/quickActions.js
 
 const { ROOTS, twoColumn } = require('../../keyboards');
+const { t, detectLang } = require('../../i18n');
 
 async function handleRestart(query, bot, state, resetTimeout) {
   const chatId = query.message.chat.id;
-  const messageId = query.message.message_id;
 
-  state[chatId] = { step: 'root', msgId: messageId };
-  resetTimeout(chatId, bot);
+  const previousId = state[chatId]?.msgId;
+  const messageId = previousId || query.message.message_id;
+
+  const current = state[chatId] || {};
+  const lng = current.lang || detectLang(query.message);
+
+  state[chatId] = { ...current, step: 'root', msgId: messageId, lang: lng };
+  resetTimeout(chatId, bot, t('errors.session_timeout', { lng }));
 
   const rootKB = twoColumn(
     ROOTS.map(r => ({ text: r, callback_data: `root:${r}` }))
   );
-  const quickRow = [
-    { text: '📖 Help', callback_data: 'show_help' },
-    { text: '❌ Cancel', callback_data: 'quick_cancel' }
-  ];
+  const quickKB = twoColumn([
+    { text: t('buttons.help', { lng }),  callback_data: 'show_help' },
+    { text: t('buttons.cancel', { lng }), callback_data: 'quick_cancel' },
+    { text: t('buttons.lang', { lng }),  callback_data: 'show_lang' }
+  ]);
 
   await bot.editMessageText(
-    '*Choose a root note to jam*',
+    t('flow.choose_root', { lng }),
     {
       chat_id: chatId,
       message_id: messageId,
       parse_mode: 'Markdown',
-      reply_markup: { inline_keyboard: [quickRow, ...rootKB] }
+      reply_markup: { inline_keyboard: [...quickKB, ...rootKB] }
     }
   );
 }
 
-function handleShowHelp(query, bot) {
-  const chatId = query.message.chat.id;
 
-  return bot.sendMessage(chatId,
-    '*How to jam with Jazz Impro Bot* 🎶\n' +
-    '1. Send /start and pick a root note.\n' +
-    '2. Choose chord quality and accidental.\n' +
-    '3. I’ll suggest an improvisation chord.\n\n' +
-    'Use /cancel (ou botão Cancelar) para parar.',
-    { parse_mode: 'Markdown' }
-  );
+async function handleShowHelp(query, bot, state) {
+  const chatId = query.message.chat.id;
+  const lng = (state[chatId]?.lang) || detectLang(query.message);
+
+  await bot.answerCallbackQuery(query.id, {
+    text: t('quick.help.text', { lng }),
+    show_alert: true
+  });
 }
+
 
 function handleQuickCancel(query, bot, state) {
   const chatId = query.message.chat.id;
+  const lng = state[chatId].lang || detectLang(query.message);
 
   if (state[chatId]?.timer) clearTimeout(state[chatId].timer);
   delete state[chatId];
 
-  return bot.sendMessage(chatId, '❌ Sessão cancelada. Use /start para recomeçar.');
+  return bot.sendMessage(chatId, t('quick.cancelled', { lng }));
+}
+
+function handleShowLang(query, bot) {
+  const chatId = query.message.chat.id;
+  const lng = detectLang(query.message);
+  const kb = [[
+    { text: 'English', callback_data: 'set_lang:en' },
+    { text: 'Português', callback_data: 'set_lang:pt' }
+  ]];
+
+  return bot.sendMessage(chatId, t('commands.lang.choose', { lng }), {
+    reply_markup: { inline_keyboard: kb }
+  });
+}
+
+async function handleSetLang(query, bot, state, resetTimeout) {
+  const chatId = query.message.chat.id;
+  const [, code] = query.data.split(':');
+
+  if (!state[chatId]) state[chatId] = {};
+  state[chatId].lang = code;
+
+  // Confirmação rápida (toast)
+  await bot.answerCallbackQuery(query.id, {
+    text: t('commands.lang.set', { lng: code, lang: code }),
+    show_alert: false
+  });
+
+  // Redesenha menu raiz já no novo idioma
+  await handleRestart(query, bot, state, resetTimeout);
+
+  // Agora podemos apagar a janela “Choose language”
+  await bot.deleteMessage(chatId, query.message.message_id);
 }
 
 module.exports = {
   handleRestart,
   handleShowHelp,
-  handleQuickCancel
+  handleQuickCancel,
+  handleShowLang,
+  handleSetLang
 };

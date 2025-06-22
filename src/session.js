@@ -9,12 +9,12 @@
 const state = {};
 const SESSION_TTL_MS = 5 * 60 * 1000;
 
-function resetTimeout(chatId, bot) {
+function resetTimeout(chatId, bot, text) {
   if (state[chatId]?.timer) clearTimeout(state[chatId].timer)
   state[chatId].timer = setTimeout(() => {
     if (state[chatId]) {
       delete state[chatId]
-      bot.sendMessage(chatId, '⌛ Session expired. Use /start to begin again.')
+      bot.sendMessage(chatId, text)
     }
   }, SESSION_TTL_MS)
 }

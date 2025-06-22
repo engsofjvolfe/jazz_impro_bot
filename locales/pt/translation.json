@@ -1,0 +1,63 @@
+{
+  "bot": {
+    "unknown_command": "🤔 Não reconheço esse comando. Tente /help."
+  },
+  "buttons": {
+    "help": "📖 Ajuda",
+    "cancel": "❌ Cancelar",
+    "back": "⬅️ Voltar",
+    "new_chord": "🔁 Novo Acorde",
+    "lang": "⚙️ Idioma"
+  },
+  "commands": {
+    "start": {
+      "welcome": "🎷 *Bem-vindo ao Jazz Impro Bot!*\n\n*Ações rápidas*\n📖 Ajuda – instruções\n❌ Cancelar – encerrar sessão\n\n👇 *Escolha uma nota para começar a improvisar*"
+    },
+    "help": {
+      "text": "*Como improvisar com o Jazz Impro Bot* 🎶\n1. Envie /start e escolha uma nota.\n2. Escolha a qualidade do acorde e um acidente, se necessário.\n3. Eu sugerirei um acorde uma quinta acima para inspirar seu solo.\n\nUse /cancel para parar e /start para recomeçar."
+    },
+    "cancel": {
+      "done": "🚫 Sessão cancelada. Use /start quando quiser improvisar novamente.",
+      "no_active": "Nenhuma sessão ativa. Use /start para começar."
+    },
+    "lang": {
+      "set": "Idioma definido para {{lang}}.",
+      "unsupported": "Código de idioma não suportado. Use /lang en ou /lang pt.",
+      "choose": "Escolha seu idioma:"
+    }
+  },
+  "errors": {
+    "session_expired_restart": "⚠️ Sessão expirada. Envie /start para começar novamente.",
+    "session_timeout": "⌛ Sessão expirada. Use /start para reiniciar.",
+    "generic": "⚠️ Algo deu errado. Tente novamente mais tarde."
+  },
+  "flow": {
+    "choose_root": "*Escolha uma nota para improvisar*",
+    "root_chosen": "Nota *{{root}}* escolhida! ✅\nEscolha a qualidade do acorde:",
+    "type_selected": "Qualidade *{{quality}}* selecionada! ✅\nAdicione um acidente, se necessário:",
+    "acc_set": "Acidente *{{accidental}}* definido! ✅\n\nCalculando…"
+  },
+  "result": {
+    "title": "🎼 <b>Resultado</b>\n",
+    "base_label": "Acorde base",
+    "improv_label": "Acorde de improviso"
+  },
+  "quick": {
+    "help": {
+      "text": "*Como improvisar com o Jazz Impro Bot* 🎶\n1. Envie /start e escolha uma nota.\n2. Escolha a qualidade e um acidente.\n3. Eu sugerirei um acorde para improvisar.\n\nUse /cancel (ou botão Cancelar) para parar."
+    },
+    "cancelled": "❌ Sessão cancelada. Use /start para recomeçar."
+  },
+  "chord_types": {
+    "major": "Maior",
+    "minor": "Menor",
+    "dominant": "Dominante",
+    "half_dim": "Meio diminuto",
+    "diminished": "Diminuto"
+  },
+  "startup": {
+    "no_token": "⚠️ Defina a variável TELEGRAM_TOKEN no arquivo .env",
+    "fake_token": "⚠️ Rodando com token falso. Polling desativado para evitar erro 404.",
+    "ready": "🤖 Bot iniciado com sucesso. Aguardando comandos..."
+  }
+}

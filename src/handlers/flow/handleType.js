@@ -7,22 +7,25 @@
 // src/handlers/flow/handleType.js
 
 const { ACCS } = require('../../keyboards');
+const { t, detectLang } = require('../../i18n');
 
 async function handleTypeStep(query, bot, state, resetTimeout) {
   const chatId = query.message.chat.id;
   const [, value] = query.data.split(':');
 
+  const lng = state[chatId].lang || detectLang(query.message);
+
   state[chatId].type = value;
   state[chatId].step = 'acc';
-  resetTimeout(chatId, bot);
+  resetTimeout(chatId, bot, t('errors.session_timeout', { lng }));
 
   const kb = [
-    [{ text: '⬅️ Back', callback_data: 'back:type' }],
+    [{ text: t('buttons.back', { lng }), callback_data: 'back:type' }],
     ...ACCS.map(a => [a])
   ];
 
   await bot.editMessageText(
-    `Quality *${value}* selected! ✅\nAdd an accidental if needed:`,
+    t('flow.type_selected', { lng, quality: value }),
     {
       chat_id: chatId,
       message_id: state[chatId].msgId,

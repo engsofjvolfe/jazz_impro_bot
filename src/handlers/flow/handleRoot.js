@@ -7,22 +7,30 @@
 // src/handlers/flow/handleRoot.js
 
 const { TYPES } = require('../../keyboards');
+const { t, detectLang } = require('../../i18n');
 
 async function handleRootStep(query, bot, state, resetTimeout) {
   const chatId = query.message.chat.id;
   const [, value] = query.data.split(':');
 
+  const lng = state[chatId].lang || detectLang(query.message);
+
   state[chatId].root = value;
   state[chatId].step = 'type';
-  resetTimeout(chatId, bot);
+  resetTimeout(chatId, bot, t('errors.session_timeout', { lng }));
 
   const kb = [
-    [{ text: '⬅️ Back', callback_data: 'back:root' }],
-    ...TYPES.map(t => [t])
+    [{ text: t('buttons.back', { lng }), callback_data: 'back:root' }],
+    ...TYPES.map(tObj => [
+      {
+        text: t(`chord_types.${tObj.key}`, { lng }),
+        callback_data: tObj.callback_data
+      }
+    ])
   ];
 
   await bot.editMessageText(
-    `Root note *${value}* chosen! ✅\nChoose the chord quality:`,
+    t('flow.root_chosen', { lng, root: value }),
     {
       chat_id: chatId,
       message_id: state[chatId].msgId,

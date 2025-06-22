@@ -3,8 +3,12 @@
 const {
   handleRestart,
   handleShowHelp,
-  handleQuickCancel
+  handleQuickCancel,
+  handleShowLang,
+  handleSetLang
 } = require('./flow/quickActions');
+
+const { t, detectLang } = require('../i18n');
 
 const {
   handleBackToRoot,
@@ -17,15 +21,18 @@ const { handleAccStep } = require('./flow/handleAccidental');
 
 async function handleCallback(query, bot, state, resetTimeout) {
   const chatId = query.message.chat.id;
+  const lng = detectLang(query.message);
 
   if (query.data === 'restart') return handleRestart(query, bot, state, resetTimeout);
-  if (query.data === 'show_help') return handleShowHelp(query, bot);
+  if (query.data === 'show_help') return handleShowHelp(query, bot, state);
   if (query.data === 'quick_cancel') return handleQuickCancel(query, bot, state);
+  if (query.data === 'show_lang') return handleShowLang(query, bot, state);
+  if (query.data.startsWith('set_lang:')) return handleSetLang(query, bot, state, resetTimeout);
   if (query.data === 'back:root') return handleBackToRoot(query, bot, state);
   if (query.data === 'back:type') return handleBackToType(query, bot, state);
 
   if (!state[chatId]) {
-    return bot.sendMessage(chatId, '⚠️ Session expired. Send /start to begin again.');
+    return bot.sendMessage(chatId, t('errors.session_expired_restart', { lng }));
   }
 
   try {
@@ -35,7 +42,7 @@ async function handleCallback(query, bot, state, resetTimeout) {
     if (step === 'acc') return handleAccStep(query, bot, state);
   } catch (err) {
     console.error(err);
-    bot.sendMessage(query.message.chat.id, '⚠️ Something went wrong. Please try again later.');
+    bot.sendMessage(query.message.chat.id, t('errors.generic', { lng }));
   }
 }
 

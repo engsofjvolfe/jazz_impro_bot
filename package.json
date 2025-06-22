@@ -7,7 +7,8 @@
     "test": "jest --coverage",
     "repl": "node -i",
     "sync-version": "node scripts/sync-version.js",
-    "prepare": "node scripts/sync-version.js"
+    "prepare": "node scripts/sync-version.js",
+    "i18n:lint": "echo 'TODO'"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +18,8 @@
     "@vitalets/google-translate-api": "^9.2.1",
     "dotenv": "^16.5.0",
     "glob": "^11.0.3",
+    "i18next": "^23.16.8",
+    "i18next-fs-backend": "^2.6.0",
     "node-telegram-bot-api": "^0.66.0"
   },
   "devDependencies": {

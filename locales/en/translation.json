@@ -1,0 +1,63 @@
+{
+  "bot": {
+    "unknown_command": "🤔 I don't recognize that command. Try /help."
+  },
+  "buttons": {
+    "help": "📖 Help",
+    "cancel": "❌ Cancel",
+    "back": "⬅️ Back",
+    "new_chord": "🔁 New Chord",
+    "lang": "⚙️ Language"
+  },
+  "commands": {
+    "start": {
+      "welcome": "🎷 *Welcome to Jazz Impro Bot!*\n\n*Quick actions*\n📖 Help – instructions\n❌ Cancel – end session\n\n👇 *Choose a root note to jam*"
+    },
+    "help": {
+      "text": "*How to jam with Jazz Impro Bot* 🎶\n1. Send /start and pick a root note.\n2. Choose the chord quality and an accidental if needed.\n3. I'll suggest a chord a fifth above to inspire your solo.\n\nUse /cancel to stop and /start to begin again."
+    },
+    "cancel": {
+      "done": "🚫 Session cancelled. Use /start when you're ready to jam again.",
+      "no_active": "No active session. Use /start to begin."
+    },
+    "lang": {
+      "set": "Language set to {{lang}}.",
+      "unsupported": "Unsupported language code. Use /lang en or /lang pt.",
+      "choose": "Choose your language:"
+    }
+  },
+  "errors": {
+    "session_expired_restart": "⚠️ Session expired. Send /start to begin again.",
+    "session_timeout": "⌛ Session expired. Use /start to begin again.",
+    "generic": "⚠️ Something went wrong. Please try again later."
+  },
+  "flow": {
+    "choose_root": "*Choose a root note to jam*",
+    "root_chosen": "Root note *{{root}}* chosen! ✅\nChoose the chord quality:",
+    "type_selected": "Quality *{{quality}}* selected! ✅\nAdd an accidental if needed:",
+    "acc_set": "Accidental *{{accidental}}* set! ✅\n\nCalculating…"
+  },
+  "result": {
+    "title": "🎼 <b>Resultado</b>\n",
+    "base_label": "Base chord",
+    "improv_label": "Improv. chord"
+  },
+  "quick": {
+    "help": {
+      "text": "*How to jam with Jazz Impro Bot* 🎶\n1. Send /start and pick a root note.\n2. Choose chord quality and accidental.\n3. I’ll suggest an improvisation chord.\n\nUse /cancel (ou botão Cancelar) para parar."
+    },
+    "cancelled": "❌ Sessão cancelada. Use /start para recomeçar."
+  },
+  "chord_types": {
+    "major": "Major",
+    "minor": "Minor",
+    "dominant": "Dominant",
+    "half_dim": "Half-dim.",
+    "diminished": "Diminished"
+  },
+  "startup": {
+    "no_token": "⚠️  Define the TELEGRAM_TOKEN variable in the .env file",
+    "fake_token": "⚠️  Running with fake token. Polling disabled to avoid 404 error.",
+    "ready": "🤖 Bot successfully started. Awaiting commands..."
+  }
+}
